@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{% block title %}{% endblock %} SMAPP</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	{% load static %}
+	<link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+	<i class="fa-solid fa-bars" id="menubtn"></i>
+	<nav>
+		<a href="/" id="homeicon"><i class="fa-solid fa-fire"></i> <span>Home</span></a>
+
+		<form action="." method="GET" id="searchform">
+			<input class="search" type="text" name="query" placeholder="Search user...">
+			<button class="btn">
+				<i class="fa-solid fa-magnifying-glass"></i>
+			</button>
+		</form>
+
+		<div class="navlinks">
+		{% if request.user.is_authenticated %}
+			<a href="{% url 'logout' %}">Log Out</a>
+			<a href="{% url 'profile' thisprofile.slug %}" class="navpfp"><img src="{{ thisprofile.pfp.url }}" alt="{{prof.user}}"></a>
+			<!-- <a href="{% url 'updateprofile' request.user.pk %}">Update Profile</a> -->
+		{% else %}
+			<a href="{% url 'login' %}">Log In</a>
+			<a href="{% url 'login' %}" class="navpfp"><img src="{{ thisprofile.pfp.url }}" alt="{{prof.user}}"></a>
+		{% endif %}
+		</div>
+	</nav>
+	<div class="profiles" id="search-profiles">
+	{% for profile in user_search %}
+		{% include 'search.html' %}
+	{% endfor %}
+	</div>
+
+	{% block main %}
+	{% endblock %}
+	
+	{% include 'footer.html' %}
+
+	{% block scripts %}
+	{% endblock %}
+	<script>
+		let searchForm = document.getElementById('searchform')
+		let searchProfiles = document.querySelector('.profiles')
+		let userSearch = document.querySelectorAll('.user-search')
+		let searchBar = document.querySelector('.search')
+		let nav = document.querySelector('nav')
+		let page = document.querySelector('.vpage')
+		let profilepage = document.querySelector('.profile')
+		let signpage= document.querySelector('.signup')
+		let loginpage = document.querySelector('.login')
+		let hero = document.querySelector('.hero')
+
+		function closeSearch(){
+			searchProfiles.style.height = '0px'
+		}
+		function openSearch(){
+			searchProfiles.style.height = '50vh'
+		}
+		// window.addEventListener('load', closeSearch)
+
+		searchBar.addEventListener('mouseover', openSearch)
+		if(page){
+			page.addEventListener('click', closeSearch)
+			hero.addEventListener('click', closeSearch)
+		}
+		if(profilepage){
+			profilepage.addEventListener('click', closeSearch)
+		}
+		if(signpage){
+			signpage.addEventListener('click', closeSearch)
+		}
+		if(loginpage){
+			loginpage.addEventListener('click', closeSearch)
+		}
+
+		if(document.URL.includes('?query=')){
+			openSearch()
+		}else{closeSearch()}
+	</script>
+
+</body>
+</html>

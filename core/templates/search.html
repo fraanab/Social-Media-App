@@ -1,0 +1,6 @@
+<a href="{% url 'profile' profile.slug %}" class="users-search">
+	<div class="navpfp">
+		<img src="{{profile.pfp.url}}" alt="{{profile.username}}">
+	</div>
+	<p>{{profile.username}}</p>
+</a>

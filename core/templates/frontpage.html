@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block main %}
+    
+    <section class="hero">
+        <h2>Welcome <span class="fa-solid fa-fire"></span> !</h2>
+
+        <h3>This website was built by <a href="https://myportfolio.sentey.repl.co/">me</a></h3>
+        <h3>Using <span>Django</span> and simple <span>HTML, CSS</span> and <span>JS</span></h3>
+        <p>· Features:</p>
+        <p> | User authentication | User search bar | CRUD operations such as <span>Posting, updating profile, account deletion, following, liking</span> | </p>
+    </section>
+
+    <section class="vpage" id="vpage">
+        {% if following_posts %}
+
+        <div class="posts"id="posts">
+            <p>Recent Posts</p>
+            {% include 'partials/posts_list.html' %}
+        </div>
+        {% else %}
+        <div>
+            <h3>This place is empty</h3>
+            <h4>Follow someone to see what they're sharing</h4>
+        </div>
+        {% endif %}
+
+
+        <div class="users">
+            <p>Follow</p>
+        {% if follow_suggest %}
+            <div class="suggested">
+            {% for profile in follow_suggest %}
+                    <div class="sug-profile">
+                        <a href="{% url 'profile' profile.slug %}">
+                            <div class="navpfp">
+                                <img src="{{ profile.pfp.url }}" alt="{{profile.username}}">
+                            </div> 
+                            {{profile.username}}
+                        </a>
+                    </div>
+            {% endfor %}
+            </div>
+        {% else %}
+            <p>Suggested profiles will show here</p>
+        {% endif %}
+        </div>
+
+        <button id="newpost-btn" class="btn"><i id="plusbutton" class="fa-solid fa-plus"></i></button>
+        <form action="{% url 'newpost' %}" method="POST" enctype="multipart/form-data" id="newpost-form">
+            {% csrf_token %}
+            {{post_form}}
+            <button class="btn">New Post</button>
+        </form>
+    </section>
+{% endblock %}
+
+{% block scripts %}
+<!-- <script src="https://unpkg.com/htmx.org@1.8.5"></script> -->
+<script>
+    newpostForm = document.getElementById('newpost-form')
+    newpostBtn = document.getElementById('newpost-btn')
+    newpostBtnIcon = document.getElementById('plusbutton')
+
+    newpostBtn.addEventListener('click', function(){
+        if(newpostForm.style.right === '-100%'){
+
+            newpostForm.style.right = '-10px';
+            newpostBtnIcon.classList.remove('fa-plus')
+            newpostBtnIcon.classList.add('fa-minus')
+
+            newpostBtn.style.bottom = 'calc(90px + 22rem)'
+
+        }else{
+            newpostForm.style.right = '-100%'
+            newpostBtnIcon.classList.remove('fa-minus')
+            newpostBtnIcon.classList.add('fa-plus')
+            newpostBtn.style.bottom = '90px'
+        }
+    })
+</script>
+{% endblock %}

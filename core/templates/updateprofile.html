@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <section class="updatepf login">
+    	<form action="." method="POST" enctype="multipart/form-data">
+    		{% csrf_token %}
+            <img src="{{thisprofile.pfp.url}}" alt="{{thisprofile.user}}">
+    		<input type="file" name="pfp">
+            <label for="bio-field" 
+                style="
+                    border-top: 1px solid var(--b);
+                    border-bottom: 1px solid var(--b);
+                "
+            >Profile Bio</label>
+    		<textarea name="bio" id="bio-field" cols="30" rows="10">{{thisprofile.bio}}</textarea>
+    		<!-- location -->
+    		<button class="btn">Accept</button>
+    		<a href="/" class="btn" style="font-size: 1rem;">Later</a>
+    	</form>
+    </section>
+{% endblock %}

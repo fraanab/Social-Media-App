@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}{{request.user}} {% endblock %}
+
+{% block main %}
+
+	<section class="profile">
+		<div class="left">
+			
+			<div class="pfp">
+				<img src="{{profile.pfp.url}}" alt="{{request.user}}">
+			</div>
+
+			<h3>{{profile.username}}</h3>
+
+			<div class="follow-info">
+				<p>Following: {{following|length}}</p>
+				<p>Followers: {{followers|length}}</p>
+			</div>
+
+			<p class="bio">
+				{{profile.bio}}
+			</p>
+
+
+			{% if request.user.pk == profile.id_user %}
+				<a href="{% url 'updateprofile' request.user.pk %}">Update profile</a>
+
+				<form action="{% url 'deleteacc' profile.username profile.id_user %}" method="POST">
+					{% csrf_token %}
+					<button class="btn">Delete Account</button>
+				</form>
+			{% else %}
+				{% if logged_user in followers %}
+					<form action="{% url 'follow' profile.slug %}" method="POST">
+						{% csrf_token %}
+						<button class="btn">Unfollow</button>
+					</form>
+				{% else %}
+					<form action="{% url 'follow' profile.slug %}" method="POST">
+						{% csrf_token %}
+						<button class="btn">Follow</button>
+					</form>
+				{% endif %}
+			{% endif %}
+
+			<h4>Following</h4>
+			<div class="following">
+				{% if following %}
+					{% for follows in following %}
+					<a href="{% url 'profile' follows.slug %}" class="following-profile">
+						<div class="navpfp">
+							<img src="{{follows.pfp.url}}" alt="{{follows.username}}">
+						</div>
+						<p>{{follows.username}}</p>
+					</a>
+					{% endfor %}
+				{% else %}
+				    <p>This user is not following anybody yet</p>
+				{% endif %}
+			</div>
+			<h4>Followers</h4>
+			<div class="following">
+				{% if followers %}
+					{% for follows in followers %}
+					<a href="{% url 'profile' follows.slug %}" class="following-profile">
+						<div class="navpfp">
+							<img src="{{follows.pfp.url}}" alt="{{follows.username}}">
+						</div>
+						<p>{{follows.username}}</p>
+					</a>
+					{% endfor %}
+				{% else %}
+				    <p>People are not following this user yet</p>
+				{% endif %}
+			</div>
+
+
+		</div>
+
+		<div class="right">
+			
+			{% for post in posts %}
+			<div class="post">
+                <div class="postimg">
+                    <img src="{{post.image.url}}" alt="{{post.caption}}">
+                </div>
+                <div class="postbot">
+                    <h4>{{post.user}}</h4>
+                    <p>{{post.caption}} <span>{{post.created_at}}</span></p>
+                    <div class="post-actions">
+                        <form class="postlike" method="POST" action="{% url 'likepost' post.id %}">
+                            {% csrf_token %}
+                            <button class="btn">
+                                <i class="fa-solid fa-thumbs-up"></i> {{post.likes}}
+                            </button>
+                        </form>
+
+                        {% if post.user == request.user or request.user.is_superuser %}
+                        <form action="{% url 'deletepost' post.id %}" class="delete" method="POST">
+                            {% csrf_token %}
+                            <button class="btn">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+			{% endfor %}
+
+		</div>
+
+		<button id="newpost-btn" class="btn"><i id="plusbutton" class="fa-solid fa-plus"></i></button>
+        <form action="{% url 'newpost' %}" method="POST" enctype="multipart/form-data" id="newpost-form">
+            {% csrf_token %}
+            {{post_form}}
+            <button class="btn">New Post</button>
+        </form>
+
+	</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    newpostForm = document.getElementById('newpost-form')
+    newpostBtn = document.getElementById('newpost-btn')
+    newpostBtnIcon = document.getElementById('plusbutton')
+
+    newpostBtn.addEventListener('click', function(){
+        if(newpostForm.style.right === '-100%'){
+
+            newpostForm.style.right = '-10px';
+            newpostBtnIcon.classList.remove('fa-plus')
+            newpostBtnIcon.classList.add('fa-minus')
+
+            newpostBtn.style.bottom = 'calc(90px + 22rem)'
+
+        }else{
+            newpostForm.style.right = '-100%'
+            newpostBtnIcon.classList.remove('fa-minus')
+            newpostBtnIcon.classList.add('fa-plus')
+            newpostBtn.style.bottom = '90px'
+        }
+    })
+</script>
+{% endblock %}

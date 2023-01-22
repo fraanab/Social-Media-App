@@ -1,0 +1,4 @@
+whats left:
+	maybe comments
+	following posts
+	responsiveness

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block main %}
+
+	<section class="signup">
+    	<form action="." method="POST">
+    		{% csrf_token %}
+
+    		<i class="fa-solid fa-fire"></i>
+
+    		<h1>Sign Up</h1>
+
+    		{{form}}
+
+    		<button class="btn">Sign Up</button>
+    		<a href="{% url 'login' %}" class="btn">Log In</a>
+    	</form>
+
+    	{% if form.errors %}
+    		<div class="error">
+    			{% for error in form.errors %}
+    			<p>{{error}}</p>	
+    			{% endfor %}
+    		</div>
+    	{% endif %}
+    </section>
+    
+{% endblock %}
