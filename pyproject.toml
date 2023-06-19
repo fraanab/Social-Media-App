@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "repl_nix_Social-Media-App"
+version = "0.1.0"
+description = ""
+authors = ["Replit user <<>>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Django = "^4.1.5"
+tzdata = "^2022.7"
+cloudinary = "^1.31.0"
+django-cloudinary-storage = "^0.3.0"
+whitenoise = "^6.3.0"
+django-cors-headers = "^3.13.0"
+Pillow = "9.5.0"
+asgiref = "3.7.2"
+sqlparse = "0.4.4"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
